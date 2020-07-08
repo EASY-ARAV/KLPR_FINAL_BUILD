@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다
+	#{title}은 parameter로 전달된 getTitle()메서드를 
+	호출한다.
+ -->
+<mapper namespace="UserDAO">
+
+	<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는
+	     아래처럼 매핑 규칙을 정해줘야 한다 -->
+	<resultMap id="userResult" type="user">
+		<id property="uno" column="UNO"/>
+		<result property="email" column="EMAIL"/>
+		<result property="pw" column="PW"/>
+		<result property="name" column="NAME"/>
+		<result property="gender" column="GENDER"/>
+		<result property="money" column="MONEY"/>
+		<result property="phone" column="PHONE"/>
+	</resultMap>
+
+	<insert id="insertUser" parameterType="user">
+		insert into user(EMAIL, PW, NAME, GENDER, MONEY, PHONE)
+		values(#{email},#{pw},#{name},#{gender},#{money},#{phone})
+	</insert>
+	
+	<update id="updateUser">
+		update user set PW=#{pw}, PHONE=#{phone} where UNO=#{uno}
+	</update>
+	
+	<update id="updateUserMoney">
+		update user set MONEY=#{money} where UNO=#{uno}
+	</update>
+	
+	<select id="getUser" resultType="user">
+		select * from user where EMAIL=#{email} AND PW=#{pw}
+	</select>
+	
+	<!-- CDATA영역에 작성된 데이터는 단순 문자 데이터이다
+	     그러므로 XML 파서는 처리하지 말아라. -->
+	<select id="getUserList" resultMap="userResult">
+		<![CDATA[
+		select * from user where UNO <= #{uno}
+		]]>
+	</select>
+	
+	<update id="spendMoney">
+		update user set MONEY=#{money} where UNO=#{uno}
+	</update>
+	
+	<select id="getAllUserList" resultMap="userResult">
+		select * from user;
+	</select>
+	
+</mapper>

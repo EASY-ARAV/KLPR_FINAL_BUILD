@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다 #{title}은 parameter로 전달된 getTitle()메서드를 호출한다. -->
+<mapper namespace="HelperDAO">
+
+	<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는 아래처럼 매핑 규칙을 정해줘야 한다 -->
+	<resultMap id="helperResult" type="helper">
+		<id property="rno" column="RNO" />
+		<result property="uno" column="UNO" />
+		<result property="sta" column="STA" />
+		<result property="end" column="END" />
+		<result property="rplace" column="RPLACE" />
+		<result property="dno" column="DNO" />
+		<result property="moving" column="MOVING" />
+		<result property="hospital" column="HOSPITAL" />
+		<result property="immigration" column="IMMIGRATION" />
+		<result property="lno" column="LNO" />
+		<result property="r_intro" column="R_INTRO" />
+		<result property="name" column="NAME" />
+		<result property="district" column="DISTRICT" />
+		<result property="language" column="LANGUAGE" />
+		<result property="avg" column="AVG" />
+		<result property="cnt" column="CNT" />
+		<result property="totalCnt" column="TOTALCNT" />
+	</resultMap>
+
+	<insert id="insertHelper" parameterType="helper">
+		insert into helper(UNO,
+		STA, END, RPLACE, MOVING, HOSPITAL, IMMIGRATION, LNO, R_INTRO)
+		values(#{uno},#{sta},#{end},#{rplace},#{moving},#{hospital},#{immigration},#{lno},#{r_intro})
+	</insert>
+
+	<update id="updateHelper">
+		update helper set
+		STA=#{sta},END=#{end},RPLACE=#{rplace},MOVING=#{moving},HOSPITAL=#{hospital},IMMIGRATION=#{immigration},R_INTRO=#{r_intro}
+		where RNO=#{rno}
+	</update>
+
+	<delete id="deleteHelper">
+		delete from helper where RNO=#{rno}
+	</delete>
+
+	<select id="getHelper" resultType="helper">
+		select * from helper_view
+		where RNO=#{rno}
+	</select>
+
+	<select id="getHelperList" resultMap="helperResult">
+		select * from helper_view
+		limit ${startRow}, ${endRow}
+	</select>
+
+	<select id="getTotalCnt" resultType="int">
+		select count(*) AS totalCnt
+		from helper_view
+	</select>
+
+	<delete id="deleteDateHelper">
+		<![CDATA[
+		delete from helper where END < curdate()
+		]]>
+	</delete>
+
+	<select id="scoreHelperList" resultMap="helperResult">
+		select * from helper_view
+		order by AVG desc limit ${startRow}, ${endRow}
+	</select>
+
+	<select id="getScoreTotalCnt" resultType="int">
+		select count(*) from
+		helper_view order by AVG desc
+	</select>
+
+
+
+	<select id="moveHelper" resultMap="helperResult">
+		select * from helper_view
+		where MOVING=1 limit ${startRow}, ${endRow}
+	</select>
+
+	<select id="getMoveTotalCnt" resultType="int">
+		select count(*) from
+		helper_view where MOVING=1
+	</select>
+
+
+	<select id="hospitalHelper" resultMap="helperResult">
+		select * from helper_view
+		where HOSPITAL=1 limit ${startRow}, ${endRow}
+	</select>
+
+	<select id="getHospitalTotalCnt" resultType="int">
+		select count(*) from
+		helper_view where HOSPITAL=1
+	</select>
+
+
+	<select id="immigrationHelper" resultMap="helperResult">
+		select * from
+		helper_view where IMMIGRATION=1 limit ${startRow}, ${endRow}
+	</select>
+
+	<select id="getImmigrationTotalCnt" resultType="int">
+		select count(*)
+		from helper_view where IMMIGRATION=1
+	</select>
+
+	<select id="seoulHelperList" resultMap="helperResult">
+		select * from helper_view
+		where DNO=#{dno} limit ${startRow}, ${endRow}
+	</select>
+
+	<select id="getSeoulTotalCnt" resultType="int">
+		select count(*) from
+		helper_view where DNO=#{dno}
+	</select>
+</mapper>

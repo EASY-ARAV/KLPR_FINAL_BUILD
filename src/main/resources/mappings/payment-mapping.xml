@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다
+	#{title}은 parameter로 전달된 getTitle()메서드를 
+	호출한다.
+ -->
+<mapper namespace="PaymentDAO">
+
+<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는
+	     아래처럼 매핑 규칙을 정해줘야 한다 -->
+	<resultMap id="paymentResult" type="payment">
+		<id property="pno" column="PNO"/>
+		<result property="uno" column="UNO"/>
+		<result property="pay" column="PAY"/>
+		<result property="state_code" column="STATE_CODE"/>
+		<result property="tid" column="TID"/>
+		<result property="approved_at" column="APPROVED_AT"/>
+		<result property="pg_token" column="PG_TOKEN"/>
+		<result property="money" column="MONEY"/>
+	</resultMap>
+
+	<!-- 카카오페이 주문서 생성 -->
+	
+	<insert id="insert_KakaoPayOrder" parameterType="payment" >	
+		insert into kakaopay(UNO, PAY, STATE_CODE) values(#{uno}, #{pay}, 0)
+	</insert>
+	
+
+	<!-- 카카오페이 주문번호 가져오기 -->
+	 <select id="select_kakaoPayOrder" resultType="payment">
+<!-- <select id="select_kakaoPayOrder" parameterType="payment"  resultMap="paymentResult"> -->
+		select * from kakaopay where UNO=#{uno} AND STATE_CODE=0
+	</select>
+	
+	<!-- 카카오페이 결제 시 결제 준비 데이터 추가 입력 -->
+	<update id="update_KaKaoPayReady"  parameterType="payment" >		
+		update kakaopay set TID=#{tid}, STATE_CODE=1 where UNO=#{uno} AND STATE_CODE=0
+	</update>
+	
+	<!-- 카카오페이 결제 시 결제 승인 데이터 추가 입력 -->
+	<update id="update_KakaoPayApproval"  parameterType="payment" >
+		update kakaopay set APPROVED_AT=#{approved_at}, PG_TOKEN=#{pg_token}, STATE_CODE=2 where UNO=#{uno} AND TID=#{tid} AND STATE_CODE=1
+	</update>
+	
+	<!-- 포인트 충전 금액 입력 -->
+	<update id="update_point"  parameterType="payment" >		
+		update user set MONEY=MONEY+#{pay} WHERE UNO=#{uno}	
+	</update>
+	
+	<!-- 결제 히스토리  -->
+	<select id="getChargeList" resultMap="paymentResult">
+		select UNO, PAY, date_format(APPROVED_AT,'%Y-%m-%d %H:%i') as APPROVED_AT from kakaopay where UNO=#{uno} order by APPROVED_AT desc
+	</select>
+	
+</mapper>

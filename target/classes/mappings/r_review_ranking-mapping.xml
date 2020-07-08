@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다
+	#{title}은 parameter로 전달된 getTitle()메서드를 
+	호출한다.
+ -->
+<mapper namespace="R_Review_RankingDAO">
+
+	<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는
+	     아래처럼 매핑 규칙을 정해줘야 한다 -->
+	<resultMap id="r_review_rankingResult" type="r_review_ranking">
+		<id property="uno" column="UNO"/>
+		<result property="name" column="NAME"/>
+		<result property="avg" column="AVG"/>
+		<result property="cnt" column="CNT"/>
+	</resultMap>
+	
+	<select id="best_Rtop5" resultMap="r_review_rankingResult">
+		select DISTINCT uno, name, avg from helper_ranking_view ORDER BY avg DESC LIMIT 5
+	</select>
+	
+	<select id="greatest_Rtop5" resultMap="r_review_rankingResult">
+		select DISTINCT uno, name, cnt from helper_ranking_view ORDER BY cnt DESC LIMIT 5
+	</select>
+	
+</mapper>

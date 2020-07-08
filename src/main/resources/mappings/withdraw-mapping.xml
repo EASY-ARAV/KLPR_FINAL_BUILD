@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다 #{title}은 parameter로 전달된 getTitle()메서드를 호출한다. -->
+<mapper namespace="WithdrawDAO">
+
+	<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는 아래처럼 매핑 규칙을 정해줘야 한다 -->
+	<resultMap id="withdrawResult" type="withdraw">
+		<id property="wno" column="WNO" />
+		<result property="uno" column="UNO" />
+		<result property="wmoney" column="WMONEY" />
+		<result property="wdate" column="WDATE" />
+		<result property="netprofit" column="NETPROFIT" />
+		<result property="waccount" column="WACCOUNT" />
+		<result property="wbank" column="WBANK" />
+		<result property="wname" column="WNAME" />
+		<result property="wphone" column="WPHONE" />
+		<result property="ddate" column="DDATE" />
+	</resultMap>
+
+	<insert id="insertWithdrawBank">
+		insert into
+		withdraw (UNO, WMONEY, WACCOUNT, WBANK, WNAME)
+		values
+		(#{uno},#{wmoney},#{waccount},#{wbank},#{wname})
+	</insert>
+
+	<insert id="insertWithdrawKakao" parameterType="withdraw">
+		insert into
+		withdraw (UNO, WMONEY, WPHONE)
+		values
+		(#{uno},#{wmoney},#{wphone})
+	</insert>
+
+</mapper>

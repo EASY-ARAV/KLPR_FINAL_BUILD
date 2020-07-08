@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다
+	#{title}은 parameter로 전달된 getTitle()메서드를 
+	호출한다.
+ -->
+<mapper namespace="MessengerDAO">
+
+	<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는
+	     아래처럼 매핑 규칙을 정해줘야 한다 -->
+	<resultMap id="messengerResult" type="messenger">
+		<id property="msgno" column="MSGNO"/>
+		<result property="mno" column="MNO"/>
+		<result property="rno" column="RNO"/>
+		<result property="eno" column="ENO"/>
+		<result property="rmsg" column="RMSG"/>
+		<result property="emsg" column="EMSG"/>
+		<result property="msgdate" column="MSGDATE"/>
+		<result property="rstate" column="RSTATE"/>
+		<result property="estate" column="ESTATE"/>
+		<result property="rname" column="RNAME"/>
+		<result property="ename" column="ENAME"/>		
+	</resultMap>
+
+	<select id="getMsg" resultType="messenger">
+		<!-- select * from messenger_view where (RNO=#{rno} or ENO=#{eno}) -->
+		select distinct RNO, ENO, MNO, RNAME, ENAME from messenger_view where (MNO=#{mno})
+	</select>
+
+	<insert id="helperSendMsg" parameterType="messenger">
+		insert into messenger(RNO, ENO, RMSG, EMSG, RSTATE, ESTATE)
+		values(#{rno},#{eno},#{rmsg},null,1,0)
+	</insert>
+	
+	<update id="helpersMsgRead">
+		<![CDATA[
+		update messenger set RSTATE=0
+		where MSGDATE < now()
+		and RNO=#{rno}
+		]]>
+	</update>
+	
+	<insert id="helpeeSendMsg" parameterType="messenger">
+		insert into messenger(RNO, ENO, RMSG, EMSG, RSTATE, ESTATE)
+		values(#{rno},#{eno},null,#{emsg},0,1)
+	</insert>
+	
+	<update id="helpeesMsgRead">
+		<![CDATA[
+		update messenger set ESTATE=0
+		where MSGDATE < now()
+		and ENO=#{eno}
+		]]>
+	</update>
+	
+	<select id="getMessageList" resultMap="messengerResult">
+		select * from messenger_view where (MNO=#{mno})
+	</select>
+	
+</mapper>

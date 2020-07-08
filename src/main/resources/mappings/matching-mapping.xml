@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다 #{title}은 parameter로 전달된 getTitle()메서드를 호출한다. -->
+<mapper namespace="MatchingDAO">
+
+	<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는 아래처럼 매핑 규칙을 정해줘야 한다 -->
+
+	<resultMap id="matchingResult" type="matching">
+		<id property="mno" column="MNO" />
+		<result property="seno" column="SENO" />
+		<result property="rcno" column="RCNO" />
+		<result property="rno" column="RNO" />
+		<result property="eno" column="ENO" />
+		<result property="mdate" column="MDATE" />
+		<result property="mplace" column="MPLACE" />
+		<result property="mservice" column="MSERVICE" />
+		<result property="mstate" column="MSTATE" />
+		<result property="ename" column="ENAME" />
+		<result property="rname" column="RNAME" />
+		<result property="seName" column="SENAME" />
+		<result property="rcName" column="RCNAME" />
+		<result property="elno" column="ELNO" />
+		<result property="rlno" column="RLNO" />
+		<result property="elang" column="ELANG" />
+		<result property="rlang" column="RLANG" />
+	</resultMap>
+
+	<select id="getMatchingList1" resultMap="matchingResult">
+		select * from
+		matching_view where MSTATE=1
+	</select>
+
+	<select id="getMatchingList2" resultMap="matchingResult">
+		select * from
+		matching_view where MSTATE=2
+	</select>
+
+	<select id="getMatchingList3" resultMap="matchingResult">
+	<![CDATA[
+		select * from matching_view where MSTATE=3 
+								and date_format(MDATE, '%Y-%m-%d')>=date_format(curdate(), '%Y-%m-%d')
+	]]>
+	</select>
+
+	<select id="getMatchingList4" resultMap="matchingResult">
+	<![CDATA[
+		select * from matching_view where MSTATE=3 
+								and date_format(MDATE, '%Y-%m-%d')<date_format(curdate(), '%Y-%m-%d')
+	]]>
+	</select>
+
+	<select id="getMatchingList5" resultMap="matchingResult">
+		select distinct * from
+		matching_view where MSTATE=4
+	</select>
+
+	<select id="SENAME_GET" parameterType="int">
+		select SENAME from
+		matching_view where MNO=#{mno}
+	</select>
+
+	<select id="RCNAME_GET" parameterType="int">
+		select RCNAME from
+		matching_view where MNO=#{mno}
+	</select>
+
+	<update id="updateMatchingState1" parameterType="matching">
+		update matching
+		set mstate=2 where MNO=#{mno}
+	</update>
+
+	<update id="updateMatchingState2" parameterType="matching">
+		update matching
+		set mstate=3 where MNO=#{mno}
+	</update>
+
+	<update id="updateMatchingState3" parameterType="matching">
+		update matching
+		set mstate=4 where MNO=#{mno}
+	</update>
+
+	<update id="updateMatchingState4" parameterType="matching">
+		update matching
+		set mstate=5 where MNO=#{mno}
+	</update>
+
+	<insert id="insertMatching" parameterType="matching">
+		insert into
+		matching(SENO, RCNO, RNO, ENO, MDATE, MPLACE, MSERVICE, MSTATE)
+		values
+		(#{seno}, #{rcno}, #{rno}, #{eno}, #{mdate}, #{mplace}, #{mservice},
+		1)
+	</insert>
+
+	<!-- CDATA영역에 작성된 데이터는 단순 문자 데이터이다 그러므로 XML 파서는 처리하지 말아라. -->
+
+	<select id="matchingAlert" resultType="matching">
+		select RCNO, count(*) as
+		COUNT from matching where RCNO=#{rcno} and MSTATE=1 group by RCNO
+	</select>
+
+	<select id="getRNOMatchingReview" resultType="matching">
+	<![CDATA[
+		select * from matching_view where ENO=#{eno} and SENO=#{eno} and MSTATE=3
+		and date_format(MDATE, '%Y-%m-%d')<date_format(curdate(), '%Y-%m-%d')
+		]]>
+	</select>
+
+	<select id="getENOMatchingReview" resultType="matching">
+	<![CDATA[
+		select * from matching_view where RNO=#{rno} and SENO=#{rno} and MSTATE=3
+		and date_format(MDATE, '%Y-%m-%d')<date_format(curdate(), '%Y-%m-%d')
+		]]>
+	</select>
+	
+	<delete id="cancelMatching" parameterType="matching">
+		delete from matching where MNO=#{mno}
+	</delete>
+	
+	<select id="getRejectedList" resultMap="matchingResult">
+		select distinct * from matching_view where MSTATE=5
+	</select>
+	
+	<select id="getMatchingListByUno" resultMap="matchingResult">
+		select distinct * from matching_view where seno=#{uno} or rcno=#{uno}
+	</select>
+
+</mapper>

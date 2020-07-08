@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다
+	#{title}은 parameter로 전달된 getTitle()메서드를 
+	호출한다.
+ -->
+<mapper namespace="HelpeeDAO">
+
+	<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는
+	     아래처럼 매핑 규칙을 정해줘야 한다 -->
+	<resultMap id="helpeeResult" type="helpee">
+		<id property="eno" column="ENO"/>
+		<result property="edate" column="EDATE"/>
+		<result property="eplace" column="EPLACE"/>
+		<result property="moving" column="MOVING"/>
+		<result property="hospital" column="HOSPITAL"/>
+		<result property="immigration" column="IMMIGRATION"/>
+		<result property="e_intro" column="E_INTRO"/>
+		<result property="uno" column="UNO"/>
+		<result property="name" column="NAME"/>
+		<result property="dno" column="DNO"/>
+		<result property="district" column="DISTRICT"/>
+		<result property="lno" column="LNO"/>
+		<result property="language" column="LANGUAGE"/>
+		<result property="avg" column="AVG"/>
+		<result property="cnt" column="CNT"/>
+		<result property="totalCnt" column="TOTALCNT"/>
+	</resultMap>
+
+	<insert id="insertHelpee" parameterType="helpee">
+		insert into helpee(UNO, EDATE, EPLACE, MOVING, HOSPITAL, IMMIGRATION, LNO, E_INTRO) 
+		values (#{uno},#{edate},#{eplace},#{moving},#{hospital},#{immigration},#{lno},#{e_intro})
+	</insert>
+	
+	<update id="updateHelpee">
+		update helpee set EDATE=#{edate}, EPLACE=#{eplace}, MOVING=#{moving}, HOSPITAL=#{hospital}, IMMIGRATION=#{immigration}, E_INTRO=#{e_intro}
+		where ENO=#{eno}
+	</update>
+	
+	<delete id="deleteHelpee">
+		delete from helpee where ENO=#{eno}
+	</delete>
+	
+	<select id="getHelpee" resultType="helpee">
+		select * from helpee_view where ENO=#{eno}
+	</select>
+	
+	<select id="getHelpeeList" resultType="helpee">
+		select * from helpee_view 			
+		limit ${startRow}, ${endRow} 		
+	</select>
+		
+	<select id="getTotalCnt" resultType="int">
+		select count(*) AS totalCnt from helpee_view
+	</select>
+	
+	<delete id="deleteDateHelpee">
+		<![CDATA[
+		delete from helpee where EDATE < curdate()
+		]]>
+	</delete>
+
+	<select id="scoreHelpeeList" resultMap="helpeeResult">
+		select * from helpee_view order by AVG desc limit ${startRow}, ${endRow}
+	</select>
+	
+	<select id="getScoreTotalCnt" resultType="int">
+		select count(*) from helpee_view order by AVG desc
+	</select>
+	
+	
+	
+	<select id="moveHelpee" resultMap="helpeeResult">
+		select * from helpee_view where MOVING=1 limit ${startRow}, ${endRow}		
+	</select>
+	
+	<select id="getMoveTotalCnt" resultType="int">
+		select count(*) from helpee_view where MOVING=1
+	</select>
+	
+	
+	<select id="hospitalHelpee" resultMap="helpeeResult">
+		select * from helpee_view where HOSPITAL=1 limit ${startRow}, ${endRow}
+	</select>
+	
+	<select id="getHospitalTotalCnt" resultType="int">
+		select count(*) from helpee_view where HOSPITAL=1
+	</select>
+	
+	
+	<select id="immigrationHelpee" resultMap="helpeeResult">
+		select * from helpee_view where IMMIGRATION=1 limit ${startRow}, ${endRow}
+	</select>
+	
+	<select id="getImmigrationTotalCnt" resultType="int">
+		select count(*) from helpee_view where IMMIGRATION=1
+	</select>
+	
+	<select id="seoulHelpeeList" resultMap="helpeeResult">
+		select * from helpee_view where DNO=#{dno} limit ${startRow}, ${endRow}
+	</select>
+	
+	<select id="getSeoulTotalCnt" resultType="int">
+		select count(*) from helpee_view where DNO=#{dno}
+	</select>
+	
+</mapper>

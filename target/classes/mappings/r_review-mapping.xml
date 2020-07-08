@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- parameterType의 생략이 가능하다
+	#{title}은 parameter로 전달된 getTitle()메서드를 
+	호출한다.
+ -->
+<mapper namespace="R_ReviewDAO">
+
+	<!-- 컬럼이름과 자바객체의 프로퍼티명이 다를 때는
+	     아래처럼 매핑 규칙을 정해줘야 한다 -->
+	<resultMap id="r_reviewResult" type="r_review">
+		<id property="r_vno" column="R_VNO"/>
+		<result property="rno" column="RNO"/>
+		<result property="eno" column="ENO"/>
+		<result property="rcomment" column="RCOMMENT"/>
+		<result property="rscore" column="RSCORE"/>
+		<result property="mstate" column="MSTATE"/>
+	</resultMap>
+
+	<select id="selectR_Review" resultType="r_review">
+		select RNO from matching where ENO=#{eno} and MSTATE=3
+	</select>
+
+	<insert id="insertR_Review" parameterType="r_review">
+		insert into r_review(RNO, ENO, RCOMMENT, RSCORE)
+		values(#{rno},#{eno},#{rcomment},#{rscore})
+	</insert>
+	
+	<update id="updateR_Review">
+		update matching set MSTATE=4 where ENO=#{eno} and RNO=#{rno} and MSTATE=3
+	</update>
+	
+	<select id="getR_Review" resultType="r_review">
+		select * from r_review where R_VNO=#{r_vno}
+	</select>
+	
+	<select id="getR_ReviewList" resultMap="r_reviewResult">
+		select * from r_review
+	</select>
+</mapper>

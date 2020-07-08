@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  <configuration>
+		 
+	<!-- Alias 설정(이름이 기니까 별명을 줘서 짧게 쓰자 -->
+	<typeAliases>
+		<typeAlias type="com.klpr.biz.user.UserVO" alias="user"></typeAlias>
+		<typeAlias type="com.klpr.biz.helper.HelperVO" alias="helper"></typeAlias>
+		<typeAlias type="com.klpr.biz.r_review.R_ReviewVO" alias="r_review"></typeAlias>
+		<typeAlias type="com.klpr.biz.language.LanguageVO" alias="language"></typeAlias>
+		<typeAlias type="com.klpr.biz.seoul.SeoulVO" alias="seoul"></typeAlias>
+		<typeAlias type="com.klpr.biz.helpee.HelpeeVO" alias="helpee"></typeAlias>
+		<typeAlias type="com.klpr.biz.e_review.E_ReviewVO" alias="e_review"></typeAlias>
+		<typeAlias type="com.klpr.biz.e_review.E_Review_RankingVO" alias="e_review_ranking"></typeAlias>
+		<typeAlias type="com.klpr.biz.r_review.R_Review_RankingVO" alias="r_review_ranking"></typeAlias>
+		<typeAlias type="com.klpr.biz.matching.MatchingVO" alias="matching"></typeAlias>
+		<typeAlias type="com.klpr.biz.payment.PaymentVO" alias="payment"></typeAlias>
+		<typeAlias type="com.klpr.biz.messenger.MessengerVO" alias="messenger"></typeAlias>
+		<typeAlias type="com.klpr.biz.withdraw.WithdrawVO" alias="withdraw"></typeAlias>
+		<typeAlias type="com.klpr.biz.pagination.PaginationVO" alias="paging"></typeAlias>
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="/mappings/user-mapping.xml" />
+		<mapper resource="/mappings/helper-mapping.xml" />
+		<mapper resource="/mappings/r_review-mapping.xml" />
+		<mapper resource="/mappings/language-mapping.xml" />
+		<mapper resource="/mappings/seoul-mapping.xml" />
+		<mapper resource="/mappings/helpee-mapping.xml" />
+		<mapper resource="/mappings/e_review-mapping.xml" />
+		<mapper resource="/mappings/e_review_ranking-mapping.xml" />
+		<mapper resource="/mappings/r_review_ranking-mapping.xml" />
+		<mapper resource="/mappings/matching-mapping.xml" />
+		<mapper resource="/mappings/payment-mapping.xml" />
+		<mapper resource="/mappings/messenger-mapping.xml" />
+		<mapper resource="/mappings/withdraw-mapping.xml" />
+	</mappers>
+	
+</configuration>
+
